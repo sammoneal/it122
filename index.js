@@ -1,28 +1,46 @@
-const http = require('node:http');
+// Use Node http package
+import http from "http";
 
-//Server config
-const hostname = 'localhost';
-const port = 8000;
+// Server config
+const hostname = "localhost";
+const port = 3000;
 
 // Create a local server
-const server = http.createServer((req, res) => {
-    if (req.url == '/') { // HTML request
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.write('<html><body><p>Hello World!</p></body></html>');
-        res.end();
-    }
-    else if (req.url == '/data') { // JSON request
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(JSON.stringify({ message: "Hello World"}));
-        res.end();
-    }
-    else { // Invalid request
-        res.writeHead(404, {"Content-type":"text/plain"});
-        res.end("Page Not Found!");
-    }
+const server = http.createServer();
+
+// Router
+server.on("request", (request, response) => {
+  if (["/","/home"].includes(request.url)) {
+    // Home Request
+    htmlResponse(response, "Hello World!.");
+  } else if (request.url == "/about") {
+    // About Request
+    htmlResponse(response, "About this page.");
+  } else {
+    // Invalid 404 Request
+    notFoundResponse(response);
+  }
+  // End Response
+  logger(response.statusCode, request.url);
+  response.end();
 });
 
+// Create an HTML Response
+const htmlResponse = (response, bodyText) => {
+  response.writeHead(200, { "Content-Type": "text/html" });
+  response.write(`<html><body><p>${bodyText}</p></body></html>`);
+};
 
-server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
-  });
+// Create a 404 Response
+const notFoundResponse = (response) => {
+  response.writeHead(404, { "Content-type": "text/plain" });
+  response.write("Page Not Found!");
+};
+
+// Log Events
+const logger = (statusCode, url) => {
+  console.log(`${statusCode}:  http://${hostname}:${port}${url}`);
+};
+
+// Start Server
+server.listen(port, hostname, logger('Server running at','/'));
