@@ -8,7 +8,7 @@ const port = 3000;
 // Create a local server
 const server = http.createServer();
 
-// Router
+// Add request router
 server.on("request", (request, response) => {
   if (["/","/home"].includes(request.url)) {
     // Home Request
@@ -20,8 +20,9 @@ server.on("request", (request, response) => {
     // Invalid 404 Request
     notFoundResponse(response);
   }
-  // End Response
+  // Log
   logger(response.statusCode, request.url);
+  // End Response
   response.end();
 });
 
@@ -38,8 +39,8 @@ const notFoundResponse = (response) => {
 };
 
 // Log Events
-const logger = (statusCode, url) => {
-  console.log(`${statusCode}:  http://${hostname}:${port}${url}`);
+const logger = (status, url) => {
+  console.log(`${status}:  http://${hostname}:${port}${url}`);
 };
 
 // Start Server
