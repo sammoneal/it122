@@ -12,10 +12,10 @@ const server = http.createServer();
 server.on("request", (request, response) => {
   if (["/","/home"].includes(request.url)) {
     // Home Request
-    htmlResponse(response, "Hello World!.");
+    htmlResponse(response, "Welcome to my web server!");
   } else if (request.url == "/about") {
     // About Request
-    htmlResponse(response, "About this page.");
+    htmlResponse(response, "My simple Node web server.");
   } else {
     // Invalid 404 Request
     notFoundResponse(response);
