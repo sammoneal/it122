@@ -1,6 +1,7 @@
 {
     "name": "it122",
     "version": "0.1",
+    "homepage": "https://github.com/sammoneal/it122",
     "scripts": {
         "start": "node index.js"
     },
