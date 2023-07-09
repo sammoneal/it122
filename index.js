@@ -1,47 +1,27 @@
-// Use Node http package
-import http from "http";
+// Express JS
+import express from 'express';
 
-// Server config
-const hostname = "localhost";
-const port = 3000;
+// Initialize and configure
+const app = express()
+const port = 3000
+app.set('view engine', 'ejs');
 
-// Create a local server
-const server = http.createServer();
+// Home route
+app.get(['/','/home'], (req, res) => {
+  res.render('home', req.query)
+})
 
-// Add request router
-server.on("request", (request, response) => {
-  if (["/","/home"].includes(request.url)) {
-    // Home Request
-    htmlResponse(response, "Welcome to my web server!");
-  } else if (request.url == "/about") {
-    // About Request
-    htmlResponse(response, "My simple Node web server.");
-  } else {
-    // Invalid 404 Request
-    notFoundResponse(response);
-  }
-  // Log
-  logger(response.statusCode, request.url);
-  // End Response
-  response.end();
-});
+// About route
+app.get('/about', (req, res) => {
+  res.render('about', req.query)
+})
 
-// Create an HTML Response
-const htmlResponse = (response, bodyText) => {
-  response.writeHead(200, { "Content-Type": "text/html" });
-  response.write(`<html><body><p>${bodyText}</p></body></html>`);
-};
+// Undirected traffic gets the 404
+app.all('*', (req, res) => {
+  res.status(404).render('error404', req.query)
+})
 
-// Create a 404 Response
-const notFoundResponse = (response) => {
-  response.writeHead(404, { "Content-type": "text/plain" });
-  response.write("Page Not Found!");
-};
-
-// Log Events
-const logger = (status, url) => {
-  console.log(`${status}:  http://${hostname}:${port}${url}`);
-};
-
-// Start Server
-server.listen(port, hostname, logger('Server running at','/'));
+// Run app
+app.listen(port, () => {
+  console.log(`App running at http://localhost:${port}/`)
+})
