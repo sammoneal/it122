@@ -11,7 +11,7 @@
   <body>
     <h1>John Carpenter Movies</h1>
     <% for( let index = 0; index < movies.length; index++ ) { %>
-      <a href="<%= "/" + movies[index].title.toLowerCase().replace(/\s/g, "") %>"><h2><%= movies[index].title %></h2></a>
+      <a href="<%= "/" + index %>"><h2><%= movies[index].title %></h2></a>
     <% } %>
   </body>
 </html>

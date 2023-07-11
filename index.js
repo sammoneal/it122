@@ -19,15 +19,20 @@ app.get(['/','/home'], (req, res) => {
   res.render('home', {movies: data.getAll()});
 })
 
-// About route
-app.get('/about', (req, res) => {
-  res.render('about');
+// Query route
+app.get('/detail', (req, res) => {
+  if (data.getItem(req.query.title)){
+    res.render('detail', {movie: data.getItem(req.query.title)});
+  }
+  else {
+    res.status(404).render('error404');
+  }
 })
 
-//Dynamic route
-app.get('/:title', (req, res) => {
-  if (data.getItem(req.params.title)){
-    res.render('id', {movie: data.getItem(req.params.title)});
+// Dyanmic route
+app.get('/:id', (req, res) => {
+  if (data.get(req.params.id)){
+    res.render('detail', {movie: data.get(req.params.id)});
   }
   else {
     res.status(404).render('error404');
