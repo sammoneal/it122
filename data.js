@@ -36,11 +36,15 @@ const data = {
             staring: 'Roddy Piper'
         },
     ],
-    get: function(id) {
-        return this.movies[id];
-    },
-    getAll: function(id) {
+    getAll: function() {
         return this.movies;
+    },
+    getItem: function(title){
+        let titles = [];
+        for (let index = 0; index < this.movies.length; index++) {
+            titles.push(this.movies[index].title.toLowerCase().replace(/\s/g, ""))
+        }
+        return this.movies[titles.indexOf(title)];
     }
 };
 

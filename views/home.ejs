@@ -6,12 +6,12 @@
     <title></title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="" />
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1>John Carpenter Movies</h1>
     <% for( let index = 0; index < movies.length; index++ ) { %>
-      <a href="<%= "/" + index %>"><h2><%= movies[index].title %></h2></a>
+      <a href="<%= "/" + movies[index].title.toLowerCase().replace(/\s/g, "") %>"><h2><%= movies[index].title %></h2></a>
     <% } %>
   </body>
 </html>
