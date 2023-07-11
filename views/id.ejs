@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="" />
   </head>
   <body>
-    <h1>About</h1>
-    <p>About this page</p>
+    <h1><%= movie.title %></h1>
+    <p>by <%= movie.director %></p>
+    <p>Released: <%= movie.year %></p>
+    <p><%= movie.runtime %> minutes</p>
+    <p>Starring: <%= movie.staring %></p>
+    <a href="/"><small>Home</small></a>
   </body>
 </html>
