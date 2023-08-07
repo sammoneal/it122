@@ -23,7 +23,7 @@ app.use("/api", cors());
 
 // Home route
 app.get(["/", "/home"], (req, res) => {
-  Movie.find({})
+  Movie.find({}).lean()
     .then((movies) => {
       res.render("home", { movies: movies });
     })
@@ -34,7 +34,7 @@ app.get(["/", "/home"], (req, res) => {
 
 // Query route
 app.get("/detail", (req, res) => {
-  Movie.findOne({ title: req.query.title })
+  Movie.findOne({ title: req.query.title }).lean()
     .then((movie) => {
       res.render("detail", { movie: movie });
     })
@@ -46,7 +46,7 @@ app.get("/detail", (req, res) => {
 // Dyanmic route
 app.get("/:id", (req, res) => {
   const queryId = new mongoose.Types.ObjectId(req.params.id);
-  Movie.findById(queryId)
+  Movie.findById(queryId).lean()
     .then((movie) => {
       res.render("detail", { movie: movie });
     })
@@ -59,7 +59,7 @@ app.get("/:id", (req, res) => {
 
 // All movies
 app.get("/api/movies", (req, res) => {
-  Movie.find({})
+  Movie.find({}).lean()
     .then((movies) => {
       res.json(movies);
     })
@@ -69,9 +69,9 @@ app.get("/api/movies", (req, res) => {
 });
 
 // Return movie
-app.get("/api/movies/:id", (req, res) => {
-  const queryId = new mongoose.Types.ObjectId(req.params.id);
-  Movie.findById(queryId)
+app.get("/api/movie/", (req, res) => {
+  const queryId = new mongoose.Types.ObjectId(req.query.id);
+  Movie.findById(queryId).lean()
     .then((movie) => {
       res.json(movie);
     })
@@ -81,9 +81,26 @@ app.get("/api/movies/:id", (req, res) => {
 });
 
 // Update movie with provided values
-app.post("/api/movies/:id", (req, res) => {
-  const queryId = new mongoose.Types.ObjectId(req.params.id);
-  Movie.findByIdAndUpdate(queryId, req.query)
+app.post("/api/movie/update", (req, res) => {
+  let data = {};
+  if (req.query.title) {
+    data.title = req.query.title
+  };
+  if (req.query.year) {
+    data.year = req.query.year
+  };
+  if (req.query.runtime) {
+    data.runtime = req.query.runtime
+  };
+  if (req.query.director) {
+    data.director = req.query.director
+  };
+  if (req.query.starring) {
+    data.starring = req.query.starring
+  };
+
+  const queryId = new mongoose.Types.ObjectId(req.query.id);
+  Movie.findByIdAndUpdate(queryId, data).lean()
     .then((movie) => {
       res.json(movie);
     })
@@ -93,9 +110,9 @@ app.post("/api/movies/:id", (req, res) => {
 });
 
 // Delete movie
-app.post("/api/movies/delete", (req, res) => {
+app.post("/api/movie/delete", (req, res) => {
   const queryId = new mongoose.Types.ObjectId(req.query.id);
-  Movie.findByIdAndDelete(queryId)
+  Movie.findByIdAndDelete(queryId).lean()
     .then((movie) => {
       res.json(movie);
     })
