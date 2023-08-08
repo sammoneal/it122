@@ -2,7 +2,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import Movie from "./models/movie.js";
+import { Movie } from "./models/movie.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 

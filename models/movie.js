@@ -1,17 +1,10 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { connectionString } from "../credentials.js";
 const { Schema } = mongoose;
 
-// credentials
-dotenv.config();
-const username = process.env.USERNAME;
-const password = process.env.PASSWORD;
-
-// connection string
-const uri = `mongodb+srv://${username}:${password}@cluster0.mvh8ig5.mongodb.net/?retryWrites=true&w=majority`;
-
 // connect to itprojects database
-mongoose.connect(uri, {
+mongoose.connect(connectionString, {
   dbName: "itprojects",
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -28,4 +21,4 @@ const movieSchema = new Schema({
 
 //export
 const Movie = mongoose.model("movie", movieSchema);
-export default Movie;
+export {Movie};
