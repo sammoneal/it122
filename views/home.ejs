@@ -3,15 +3,51 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
+    <title>John Carpenter Movies</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
   <body>
-    <h1>John Carpenter Movies</h1>
-    <% for( let index = 0; index < movies.length; index++ ) { %>
-      <a href="<%= "/" + movies[index].id %>"><h2><%= movies[index].title %></h2></a>
-    <% } %>
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+      // Passed parameters
+      const movies = <%- JSON.stringify(movies) %>;
+      console.log(movies);
+  
+      // List of movies with link
+      const Movies = (props) => {
+        const listItems = props.movies.map(movie => 
+          <a href={"./" + movie._id}><li key={movie.title}>{movie.title}</li></a>);
+        return <ul>{listItems}</ul>;
+      };
+      
+      // Detail component
+      const Detail = () => {
+        return
+      };
+
+      // Main component
+      const App = () => {
+        return (
+          <div>
+            <h1>John Carpenter Movies</h1>
+            <Movies movies={movies}/>
+          </div>
+      )};
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+
+    </script>
   </body>
 </html>
