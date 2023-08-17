@@ -26,13 +26,16 @@
       // List of movies with link
       const Movies = (props) => {
         const listItems = props.movies.map(movie => 
-          <a href={"./" + movie._id}><li key={movie.title}>{movie.title}</li></a>);
+          <li key={movie._id} id={movie._id} onClick={props.clickHandler}>
+            {movie.title}
+          </li>);
+        
         return <ul>{listItems}</ul>;
       };
       
       // Detail component
-      const Detail = () => {
-        return
+      const showDetail = (event) => {
+        window.location.href = "./" + event.target.id;
       };
 
       // Main component
@@ -40,7 +43,7 @@
         return (
           <div>
             <h1>John Carpenter Movies</h1>
-            <Movies movies={movies}/>
+            <Movies movies={movies} clickHandler={showDetail}/>
           </div>
       )};
 
