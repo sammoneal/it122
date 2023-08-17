@@ -14,43 +14,84 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   </head>
   <body>
-    
     <div id="root"></div>
 
     <script type="text/babel">
 
-      // Passed parameters
-      const movies = <%- JSON.stringify(movies) %>;
-      console.log(movies);
-  
-      // List of movies with link
+      // List of movies component
       const Movies = (props) => {
-        const listItems = props.movies.map(movie => 
+        const listItems = props.movies.map(movie =>
           <li key={movie._id} id={movie._id} onClick={props.clickHandler}>
             {movie.title}
           </li>);
-        
+
         return <ul>{listItems}</ul>;
       };
-      
+
       // Detail component
-      const showDetail = (event) => {
-        window.location.href = "./" + event.target.id;
+      const Detail = (props) => {
+        return <div>
+          <hr />
+          <h3>{props.movie.title} Details</h3>
+            <form>
+                title: <input type="text" name="title" value={props.movie.title || ""} onChange={props.handleChange} /><br/>
+                year: <input type="text" name="year" value={props.movie.year || ""} onChange={props.handleChange}/><br/>
+                runtime: <input type="text" name="runtime" value={props.movie.runtime || ""} onChange={props.handleChange} /><br/>
+                director: <input type="text" name="director" value={props.movie.director || ""} onChange={props.handleChange} /><br/>
+                starring: <input type="text" name="starring" value={props.movie.starring || ""} onChange={props.handleChange} /><br/>
+            </form>
+            <button name="clear" onClick={props.clearForm}>Clear</button>&nbsp;
+        </div>;
       };
 
       // Main component
-      const App = () => {
+      const MovieApp = () => {
+        // Initial State
+        const [movies, setMovies] = React.useState(<%- JSON.stringify(movies) %>);
+        const [currentMovie, setCurrentMovie] = React.useState({});
+
+        // List click event handler function
+        const selectItem = (event) => {
+          const found = movies.find((movie) => {
+              return movie.title === event.target.innerText;
+          });
+          setCurrentMovie(found);
+        }
+
+        // Current item reset function
+        const clearForm = () => {
+          setCurrentMovie({});
+        }
+
+        // Update list state
+        const handleChange = (event) => {
+          let newMovie = { ...currentMovie } ;
+          newMovie[event.target.name] = event.target.value;
+
+          // update currentItem state
+          setCurrentMovie(newMovie);
+
+          // update list state
+          movies.find((movie, index) => {
+            if (movie._id == newMovie._id) {
+                movies[index] = newMovie;
+                setMovies(movies);
+            }
+          })
+        }
+
         return (
           <div>
             <h1>John Carpenter Movies</h1>
-            <Movies movies={movies} clickHandler={showDetail}/>
+            <Movies movies={movies} clickHandler={selectItem}/>
+            <Detail movie={currentMovie} handleChange={handleChange} clearForm={clearForm}/>
           </div>
-      )};
+        )
+      };
 
       const container = document.getElementById('root');
       const root = ReactDOM.createRoot(container);
-      root.render(<App />);
-
+      root.render(<MovieApp />);
     </script>
   </body>
 </html>
