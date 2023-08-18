@@ -21,7 +21,7 @@
       // List of movies component
       const Movies = (props) => {
         const listItems = props.movies.map(movie =>
-          <li key={movie._id} id={movie._id} onClick={props.clickHandler}>
+          <li key={movie._id} id={movie._id} onClick={props.select}>
             {movie.title}
           </li>);
 
@@ -40,38 +40,40 @@
                 director: <input type="text" name="director" value={props.movie.director || ""} onChange={props.handleChange} /><br/>
                 starring: <input type="text" name="starring" value={props.movie.starring || ""} onChange={props.handleChange} /><br/>
             </form>
-            <button name="clear" onClick={props.clearForm}>Clear</button>&nbsp;
+            <button name="clear" onClick={props.clear}>Clear</button>&nbsp;
+            <button name="save" onClick={props.save}>Save</button>&nbsp;
         </div>;
       };
 
       // Main component
       const MovieApp = () => {
+        
         // Initial State
         const [movies, setMovies] = React.useState(<%- JSON.stringify(movies) %>);
         const [currentMovie, setCurrentMovie] = React.useState({});
 
         // List click event handler function
-        const selectItem = (event) => {
+        const select = (event) => {
           const found = movies.find((movie) => {
               return movie.title === event.target.innerText;
           });
           setCurrentMovie(found);
         }
 
-        // Current item reset function
-        const clearForm = () => {
+        // Current movie reset function
+        const clear = () => {
           setCurrentMovie({});
         }
 
-        // Update list state
+        // Update state function
         const handleChange = (event) => {
           let newMovie = { ...currentMovie } ;
           newMovie[event.target.name] = event.target.value;
 
-          // update currentItem state
+          // currentMovie state
           setCurrentMovie(newMovie);
 
-          // update list state
+          // movie state
           movies.find((movie, index) => {
             if (movie._id == newMovie._id) {
                 movies[index] = newMovie;
@@ -80,15 +82,42 @@
           })
         }
 
+        // Save function
+        const save = () => {
+          if (!currentMovie.title) {
+            return;
+          }
+          fetch("/api/movie/update?" + new URLSearchParams(currentMovie), {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' }
+          })
+          .then(res => res.json())
+          .then((data) => {
+              // if item has no _id, it wasn't previously saved in DB
+              if (!currentMovie._id) {
+                  currentMovie._id = data._id;
+                  setCurrentMovie(currentMovie);
+                  // update items list
+                  let newMovies = [...movies];
+                  newMovies.push(currentMovie);
+                  setMovies(newMovies);
+              }
+          })
+      }
+
+        // Delete function
+
+        // Return title, movie list, and details panel as app
         return (
           <div>
             <h1>John Carpenter Movies</h1>
-            <Movies movies={movies} clickHandler={selectItem}/>
-            <Detail movie={currentMovie} handleChange={handleChange} clearForm={clearForm}/>
+            <Movies movies={movies} select={select}/>
+            <Detail movie={currentMovie} handleChange={handleChange} clear={clear} save={save} />
           </div>
         )
       };
 
+      // Render app in root container
       const container = document.getElementById('root');
       const root = ReactDOM.createRoot(container);
       root.render(<MovieApp />);

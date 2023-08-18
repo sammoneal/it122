@@ -1,6 +1,6 @@
 // Express JS
 import express from "express";
-import mongoose from "mongoose";
+import mongoose, { Mongoose } from "mongoose";
 import cors from "cors";
 import { Movie } from "./models/movie.js";
 import { fileURLToPath } from "url";
@@ -85,7 +85,7 @@ app.get("/api/movie/", (req, res) => {
     });
 });
 
-// Update movie with provided values
+// Update movie with provided values or add new record
 app.post("/api/movie/update", (req, res) => {
   let data = {};
   if (req.query.title) {
@@ -104,8 +104,14 @@ app.post("/api/movie/update", (req, res) => {
     data.starring = req.query.starring;
   }
 
-  const queryId = new mongoose.Types.ObjectId(req.query.id);
-  Movie.findByIdAndUpdate(queryId, data, { upsert: true })
+  let queryId;
+  if (req.query._id) {
+    queryId = new mongoose.Types.ObjectId(req.query._id);
+  } else {
+    queryId = new mongoose.Types.ObjectId();
+  }
+
+  Movie.findByIdAndUpdate(queryId, data, {upsert:true, new:true})
     .lean()
     .then((movie) => {
       res.json(movie);
