@@ -42,12 +42,13 @@
             </form>
             <button name="clear" onClick={props.clear}>Clear</button>&nbsp;
             <button name="save" onClick={props.save}>Save</button>&nbsp;
+            <button name="delete" onClick={props.deleteMovie}>Delete</button>&nbsp;
         </div>;
       };
 
       // Main component
       const MovieApp = () => {
-        
+
         // Initial State
         const [movies, setMovies] = React.useState(<%- JSON.stringify(movies) %>);
         const [currentMovie, setCurrentMovie] = React.useState({});
@@ -93,11 +94,11 @@
           })
           .then(res => res.json())
           .then((data) => {
-              // if item has no _id, it wasn't previously saved in DB
+              // Need the _id created by the server before we set currentMovie
               if (!currentMovie._id) {
                   currentMovie._id = data._id;
                   setCurrentMovie(currentMovie);
-                  // update items list
+                  // movies object needs to include the new movie
                   let newMovies = [...movies];
                   newMovies.push(currentMovie);
                   setMovies(newMovies);
@@ -106,13 +107,32 @@
       }
 
         // Delete function
+        const deleteMovie = () => {
+          let id = currentMovie._id;
+          // Make delete request
+          fetch(`/api/movie/delete?id=${id}`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' }
+          })
+          .then(res => res.json())
+          .then((data) => {
+              // Filter by id of deleted movie
+                const newMovies = movies.filter((movie) => {
+                  return movie._id !== id;
+                });
+            // Filtered movies are set as movies
+            setMovies(newMovies);
+            // No current item since it was deleted
+            setCurrentMovie({})
+          });
+      }
 
         // Return title, movie list, and details panel as app
         return (
           <div>
             <h1>John Carpenter Movies</h1>
             <Movies movies={movies} select={select}/>
-            <Detail movie={currentMovie} handleChange={handleChange} clear={clear} save={save} />
+            <Detail movie={currentMovie} handleChange={handleChange} clear={clear} save={save} deleteMovie={deleteMovie} />
           </div>
         )
       };
