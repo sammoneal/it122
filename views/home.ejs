@@ -50,8 +50,19 @@
       const MovieApp = () => {
 
         // Initial State
-        const [movies, setMovies] = React.useState(<%- JSON.stringify(movies) %>);
+        const [movies, setMovies] = React.useState([]);
         const [currentMovie, setCurrentMovie] = React.useState({});
+
+        // Load after rendering
+        React.useEffect(() => {
+          const fetchData = async () => {
+              fetch("/api/movies").then(res => res.json())
+              .then((json) => {
+                  setMovies(json);
+              })
+          }
+          fetchData()
+      }, []);
 
         // List click event handler function
         const select = (event) => {
