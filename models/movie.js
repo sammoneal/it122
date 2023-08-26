@@ -4,8 +4,8 @@ const { Schema } = mongoose;
 
 // credentials
 dotenv.config();
-const username = process.env.USERNAME;
-const password = process.env.PASSWORD;
+const username = process.env.DB_USERNAME;
+const password = process.env.DB_PASSWORD;
 
 // connection string
 const uri = `mongodb+srv://${username}:${password}@cluster0.mvh8ig5.mongodb.net/?retryWrites=true&w=majority`;
